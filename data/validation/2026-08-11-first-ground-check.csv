@@ -1,0 +1,48 @@
+# First ground-truth check. Sarpavaram paddy block, East Godavari.
+#
+# Ground observation: 11 Aug 2026, ~18:50 IST, on foot, 19 photos.
+# All three observed fields held transplanted rice standing in visible water.
+# The negative control was not visited; it is included because radar and NDVI
+# both indicate it is not paddy, and a method has to get the negatives right too.
+#
+# Coordinates are deliberately NOT in this file. Exact field locations stay in
+# data/fields/, which is gitignored. See README "Anonymised from the first commit".
+#
+# vv_db / vh_db are Sentinel-1 RTC sigma-nought, descending relative orbit 19,
+# averaged over a ~50 m box in LINEAR power then converted to dB.
+field_id,date,vv_db,vh_db,observed,note
+F001,2026-05-01,-10.2,-14.6,,pre-season baseline
+F001,2026-05-13,-8.2,-13.7,,pre-season baseline
+F001,2026-06-18,-9.5,-13.5,,
+F001,2026-06-25,-8.5,-14.8,,
+F001,2026-07-07,-9.5,-14.6,,
+F001,2026-07-19,-12.7,-21.6,,
+F001,2026-07-31,-10.5,-19.2,flooded,observed flooded 11 Aug; nearest pass 31 Jul
+F002,2026-05-01,-11.8,-15.6,,pre-season baseline
+F002,2026-05-13,-7.3,-12.8,,pre-season baseline
+F002,2026-06-18,-7.1,-14.0,,
+F002,2026-06-25,-7.5,-16.4,,
+F002,2026-07-07,-7.7,-16.1,,
+F002,2026-07-19,-13.3,-19.8,,
+F002,2026-07-31,-12.6,-20.2,flooded,observed flooded 11 Aug; nearest pass 31 Jul
+F003,2026-05-01,-12.0,-16.3,,pre-season baseline
+F003,2026-05-13,-6.6,-12.9,,pre-season baseline
+F003,2026-06-18,-7.6,-14.2,,
+F003,2026-06-25,-8.1,-15.6,,
+F003,2026-07-07,-10.0,-18.8,,
+F003,2026-07-19,-14.2,-19.6,,
+F003,2026-07-31,-13.2,-19.6,flooded,observed flooded 11 Aug; nearest pass 31 Jul
+F004,2026-05-01,-11.9,-15.6,,pre-season baseline
+F004,2026-05-13,-6.4,-13.3,,pre-season baseline
+F004,2026-06-18,-7.3,-13.5,,
+F004,2026-06-25,-8.4,-14.0,,
+F004,2026-07-07,-8.3,-15.5,,
+F004,2026-07-19,-15.2,-21.7,,
+F004,2026-07-31,-17.1,-22.8,,not visited; radar-selected patch 1 km west of F001-F003
+F900,2026-05-01,-11.8,-15.0,,negative control - pre-season baseline
+F900,2026-05-13,-8.2,-14.0,,negative control - pre-season baseline
+F900,2026-06-18,-8.0,-14.2,,
+F900,2026-06-25,-8.9,-16.7,,
+F900,2026-07-07,-8.1,-15.0,,
+F900,2026-07-19,-8.3,-16.5,,
+F900,2026-07-31,-11.1,-17.8,not_paddy,"NH-216 layout/scrub; NDVI 2025 peak 0.58 but no flood signature"
