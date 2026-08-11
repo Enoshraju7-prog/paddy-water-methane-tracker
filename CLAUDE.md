@@ -115,8 +115,23 @@ happened once and would have wasted real field trips.
 **Using RTC for the pass calendar.** `sentinel-1-rtc` lags in processing and drops
 scenes. Use `sentinel-1-grd` for *dates*; RTC stays correct for *backscatter*.
 
-**Canopy closure.** Around 60 days after transplant the leaves hide the water, VV
-rises, and a fixed threshold reads "dry". See rule 5.
+**Canopy closure, and how little headroom the threshold really has.** Around 60
+days after transplant the leaves hide the water, VV rises, and a fixed threshold
+reads "dry". See rule 5.
+
+The margin is much tighter than a generic land-cover table suggests. "Dense
+canopy ≈ −7 dB" is a *forest/shrub* figure and does not describe rice: a paddy
+canopy stands in standing water, which keeps absorbing and reflecting the pulse
+away even once the leaves close. The rice SAR literature puts peak-of-season VV
+nearer **−16 to −14 dB** — i.e. as little as ~1 dB above the −16 dB threshold,
+not the ~9 dB of comfort −7 dB implies.
+
+Consequence: canopy closure may not just add noise, it may push mid-season
+observations across the threshold wholesale. Do not assume the budgeted risk;
+**measure it** — read the Phase 4 curves, find where each field's series peaks,
+and if the peak sits within ~2 dB of the threshold, that field's mid-season
+observations are low-confidence by construction (rule 5), regardless of what the
+threshold says. Trust your own curves over both numbers above.
 
 **12-day revisit undercounts drying events.** A drying event shorter than the gap
 is invisible. Every drying-event count is a **lower bound** — say so wherever the
@@ -137,9 +152,9 @@ be wrong in.
 | Thing | Expected |
 |---|---|
 | Field area | 0.2–2 ha. Wildly off → wrong CRS |
-| σ⁰ VV open water | ≈ −18 dB |
-| σ⁰ VV bare soil | ≈ −10 dB |
-| σ⁰ VV dense canopy | ≈ −7 dB |
+| σ⁰ VV ponded paddy | −22 to −17 dB |
+| σ⁰ VV bare / drained soil | ≈ −10 dB |
+| σ⁰ VV rice at peak canopy | −16 to −14 dB. **Not −7 dB** — see below |
 | Passes per season per field | ~13 at a 12-day revisit |
 | Second pipeline run | downloads nothing (cache) |
 | API response | well under 100 ms, zero computation |

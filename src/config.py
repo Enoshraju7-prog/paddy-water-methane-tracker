@@ -28,6 +28,11 @@ INTERIM_DIR = DATA_DIR / "interim"
 PROCESSED_DIR = DATA_DIR / "processed"
 FIELDS_DIR = DATA_DIR / "fields"
 
+# Validation results are TRACKED, unlike everything else under data/. They carry
+# no coordinates and no personal detail — only field ids and measurements — and a
+# claim about accuracy is worthless if the reader cannot see the rows behind it.
+VALIDATION_DIR = DATA_DIR / "validation"
+
 S1_DIR = RAW_DIR / "sentinel1"
 S2_DIR = RAW_DIR / "sentinel2"
 POWER_DIR = RAW_DIR / "power"
@@ -35,6 +40,10 @@ SOILGRIDS_DIR = RAW_DIR / "soilgrids"
 
 FIGURES_DIR = PROJECT_ROOT / "reports" / "figures"
 MODELS_DIR = PROJECT_ROOT / "models"
+
+# reports/figures/ is gitignored (regenerated output). Figures that a reader of
+# the README needs to see are written here instead, and are tracked.
+DOCS_IMG_DIR = PROJECT_ROOT / "docs" / "img"
 
 FIELDS_GEOJSON = FIELDS_DIR / "fields.geojson"
 GROUND_TRUTH_CSV = FIELDS_DIR / "ground_truth.csv"
@@ -62,12 +71,28 @@ class Settings(BaseSettings):
 
     # ── Study area ───────────────────────────────────────────────────────────
     # WGS84 bbox: (min_lon, min_lat, max_lon, max_lat).
-    # Placeholder covering part of the East Godavari delta.
-    # REPLACE once the mandals are fixed and Trip 1 polygons exist.
-    bbox_min_lon: float = 81.70
-    bbox_min_lat: float = 16.60
-    bbox_max_lon: float = 82.10
-    bbox_max_lat: float = 16.95
+    #
+    # East Godavari delta, north-east corner: the Kakinada–Pithapuram side plus
+    # the Ramachandrapuram/Mandapeta paddy belt to the west. Anchors named for
+    # Trip 1, roughly:
+    #
+    #   Pithapuram          17.12 N  82.25 E   (northern edge)
+    #   Vakada              17.12 N  82.28 E   (Gollaprolu side, near Pithapuram)
+    #   Sarpavaram          17.02 N  82.22 E   (Kakinada Rural)
+    #   Kakinada            16.99 N  82.25 E   (eastern edge — coast at ~82.28)
+    #   Ramachandrapuram    16.83 N  82.03 E
+    #   Mandapeta           16.87 N  81.93 E   (western edge)
+    #
+    # "Kothuru" and "Sandipudi" are common village names in this belt and are
+    # inside the envelope; fix their exact locations from the Trip 1 GPS traces.
+    #
+    # ~50 × 50 km. Wide enough that several relative orbits may cover it, which
+    # helps the overpass calendar. Tighten it once fields.geojson exists —
+    # Phase 2 should replace this with the polygon envelope plus a small buffer.
+    bbox_min_lon: float = 81.85
+    bbox_min_lat: float = 16.75
+    bbox_max_lon: float = 82.32
+    bbox_max_lat: float = 17.20
 
     # ── Seasons ──────────────────────────────────────────────────────────────
     # Two seasons, two jobs:
@@ -89,10 +114,23 @@ class Settings(BaseSettings):
 
     # ── Sentinel-1 flood detection ───────────────────────────────────────────
     # Open water is a specular reflector — it mirrors the pulse away from the
-    # satellite, so flooded pixels come back dark. Typical σ⁰ VV:
-    #   open water ~ -18 dB | bare soil ~ -10 dB | dense canopy ~ -7 dB
-    # -16 dB is a defensible STARTING point. Tune it against the Phase 5
-    # same-day observations and record what you changed and why.
+    # satellite, so flooded pixels come back dark. Typical σ⁰ VV for RICE:
+    #   ponded paddy  -22 … -17 dB
+    #   bare/drained  ~ -10 dB
+    #   peak canopy   -16 … -14 dB   <-- NOT -7 dB
+    #
+    # That last line is the one that matters and the one most tables get wrong
+    # for this crop. "Dense canopy ~ -7 dB" is a forest figure. A rice canopy
+    # stands in water, which keeps scattering the pulse away after the leaves
+    # close, so peak-season VV lands far lower — sometimes barely 1 dB above the
+    # threshold below rather than the ~9 dB that -7 dB would imply.
+    #
+    # So -16.0 is a defensible STARTING point with LESS headroom than it looks
+    # like it has. Tune it against the Phase 5 same-day observations via
+    # sweep_threshold(), and record what you changed and why. If a field's
+    # series peaks within ~2 dB of this value, its mid-season observations are
+    # low-confidence by construction — flag them, don't move the threshold to
+    # make the curve look right (rule 5).
     s1_vv_flood_threshold_db: float = -16.0
 
     # Backscatter differs between ascending and descending passes. Mixing them
@@ -155,7 +193,8 @@ settings = Settings()
 def ensure_dirs() -> None:
     """Create every directory the pipeline writes to."""
     for path in (RAW_DIR, S1_DIR, S2_DIR, POWER_DIR, SOILGRIDS_DIR,
-                 INTERIM_DIR, PROCESSED_DIR, FIELDS_DIR, FIGURES_DIR, MODELS_DIR):
+                 INTERIM_DIR, PROCESSED_DIR, FIELDS_DIR, VALIDATION_DIR,
+                 FIGURES_DIR, DOCS_IMG_DIR, MODELS_DIR):
         path.mkdir(parents=True, exist_ok=True)
 
 
