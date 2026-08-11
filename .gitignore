@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environments
+.env
+.venv
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# ── Data ─────────────────────────────────────────────────────────────
+# Raw satellite downloads are large and re-fetchable. Never commit them.
+data/raw/
+data/interim/
+data/processed/
+
+# ── Field data: PRIVACY, not size ────────────────────────────────────
+# Real boundaries + interview transcripts identify real people.
+# Only the anonymised, coordinate-jittered sample is committed.
+data/fields/*
+!data/fields/.gitkeep
+!data/fields/fields.sample.geojson
+references/interviews/
+references/*_raw.md
+
+# Models
+models/*.pkl
+models/*.joblib
+models/*.pt
+
+# Reports output
+reports/figures/*.png
+reports/figures/*.jpg
+reports/figures/*.svg
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# macOS
+.DS_Store
+.AppleDouble

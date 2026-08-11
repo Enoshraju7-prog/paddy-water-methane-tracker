@@ -1,0 +1,67 @@
+# Conda environment for the Paddy Water & Methane Tracker
+#
+#   conda env create -f environment.yml
+#   conda activate varaha
+#   conda env update --file environment.yml --prune
+#   conda env remove --name varaha
+#
+# conda-forge, not defaults: the geospatial stack (GDAL/PROJ/GEOS) is only
+# reliably built there. Mixing channels is the #1 cause of a broken rasterio.
+
+name: varaha
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.11
+  - pip
+
+  # ── Geospatial core ──────────────────────────────────────────
+  - geopandas
+  - rasterio
+  - rioxarray
+  - shapely
+  - pyproj
+  - fiona
+  - xarray
+  - dask
+  - netcdf4
+
+  # ── Data science ─────────────────────────────────────────────
+  - numpy
+  - pandas
+  - pyarrow            # parquet for data/interim and data/processed
+  - scipy
+  - scikit-learn       # v2: trained flood classifier
+  - matplotlib
+  - seaborn
+
+  # ── Notebooks ────────────────────────────────────────────────
+  - jupyter
+  - ipykernel
+  - ipywidgets
+
+  # ── Backend (same env — one env for the whole project) ───────
+  - fastapi
+  - uvicorn
+  - sqlalchemy
+  - httpx
+
+  # ── Utilities ────────────────────────────────────────────────
+  - requests
+  - python-dotenv
+  - tqdm
+  - typer
+  - rich
+  - ruff
+
+  - pip:
+    # ── STAC / Planetary Computer ──────────────────────────────
+    - pystac-client
+    - planetary-computer
+    - odc-stac                 # lazy-load STAC items into xarray
+
+    # ── Config / DB ────────────────────────────────────────────
+    - pydantic-settings
+    - "psycopg[binary]"        # Postgres driver (v3)

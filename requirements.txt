@@ -1,0 +1,50 @@
+# pip fallback. Prefer environment.yml — the geospatial stack (GDAL/PROJ/GEOS)
+# installs far more reliably from conda-forge than from PyPI wheels.
+#
+#   pip install -r requirements.txt
+
+## Geospatial
+geopandas
+rasterio
+rioxarray
+shapely
+pyproj
+fiona
+xarray
+dask
+netCDF4
+
+## STAC / Microsoft Planetary Computer
+pystac-client
+planetary-computer
+odc-stac
+
+## Data science
+numpy
+pandas
+pyarrow
+scipy
+scikit-learn
+matplotlib
+seaborn
+
+## Notebooks
+jupyter
+ipykernel
+ipywidgets
+
+## Backend
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg[binary]
+pydantic-settings
+httpx
+
+## Utilities
+requests
+python-dotenv
+tqdm
+typer
+rich
+ruff
