@@ -58,3 +58,6 @@ frontend/dist/
 # macOS
 .DS_Store
 .AppleDouble
+
+# Private working notes — interview prep, strategy. Local only.
+varaha-project-plan.md
