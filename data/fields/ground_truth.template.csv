@@ -1,0 +1,5 @@
+field_id,date,source,observed_flooded,water_depth_cm,photo,confidence,notes
+F001,2026-08-14,same_day_visit,TRUE,5,IMG_20260814_0931.jpg,certain,stood at the bund; satellite pass 06:12 IST same day
+F002,2026-08-14,same_day_visit,FALSE,0,IMG_20260814_1015.jpg,certain,drained 2 days ago before topdressing urea
+F003,2026-08-14,same_day_visit,TRUE,2,IMG_20260814_1102.jpg,unsure,very shallow - could read either way
+F001,2025-09-12,recall,FALSE,,,unsure,"farmer said 'maybe', asked about 2025 date read back to him"

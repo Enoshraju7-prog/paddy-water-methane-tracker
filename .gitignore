@@ -30,11 +30,13 @@ data/interim/
 data/processed/
 
 # ── Field data: PRIVACY, not size ────────────────────────────────────
-# Real boundaries + interview transcripts identify real people.
-# Only the anonymised, coordinate-jittered sample is committed.
+# Real boundaries, interviews and photos identify real people.
+# Only anonymised samples and empty templates are committed.
 data/fields/*
 !data/fields/.gitkeep
 !data/fields/fields.sample.geojson
+!data/fields/*.template.csv
+data/fields/photos/
 references/interviews/
 references/*_raw.md
 
