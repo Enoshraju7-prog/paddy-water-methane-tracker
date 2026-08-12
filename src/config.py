@@ -137,6 +137,32 @@ class Settings(BaseSettings):
     # injects steps into the time series that look like drying events. Pin one.
     s1_orbit_direction: str = "descending"  # "ascending" | "descending" | "any"
 
+    # ── VH-drop flood rule ───────────────────────────────────────────────────
+    # Measured 12 Aug 2026, 12 locations photographed 15 minutes after the pass,
+    # every one holding 5-7 cm of water: the absolute VV rule above scored 0/12.
+    # A rice field flooded UNDER a canopy is not dark, so "how low is it" is the
+    # wrong question. "How far has it fallen from its own dry level" is the right
+    # one, and VH falls much further than VV when the crop floods.
+    #
+    # Two things this buys, beyond accuracy:
+    #   - a per-field reference absorbs whatever makes one field sit brighter
+    #     than its neighbour: soil, roughness, row direction, look angle.
+    #   - a DIFFERENCE cancels any constant calibration offset, so a sigma0
+    #     baseline and a gamma0 observation can be compared. An absolute
+    #     threshold cannot survive that mix; this rule can.
+    #
+    # 3.0 dB is a STARTING point, not a result. Sweep it — src/features/flooding.py.
+    vh_drop_threshold_db: float = 3.0
+
+    # The dry reference window: this many days before season_start. It must land
+    # on bare soil, so check the curves before trusting it. NOTE the 2026 curves
+    # say transplanting happens mid-JULY, not at season_start (15 June) — so this
+    # window is currently wider than it looks. Fix season_start first.
+    baseline_days: int = 90
+
+    # A field needs at least this many reference passes for a usable baseline.
+    min_baseline_obs: int = 3
+
     # ── Season metrics ───────────────────────────────────────────────────────
     # Minimum consecutive dry observations to count as a drying event. At a
     # ~12-day revisit, 1 observation ≈ up to 12 days dry. Keep at 1 for v1 and
