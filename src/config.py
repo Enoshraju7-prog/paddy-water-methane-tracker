@@ -130,7 +130,7 @@ class Settings(BaseSettings):
     # sweep_threshold(), and record what you changed and why. If a field's
     # series peaks within ~2 dB of this value, its mid-season observations are
     # low-confidence by construction — flag them, don't move the threshold to
-    # make the curve look right (rule 5).
+    # make the curve look right (rule 6).
     s1_vv_flood_threshold_db: float = -16.0
 
     # Backscatter differs between ascending and descending passes. Mixing them

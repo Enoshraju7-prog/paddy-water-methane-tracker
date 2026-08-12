@@ -5,9 +5,9 @@ costs the climate.**
 
 East Godavari delta, Andhra Pradesh, India.
 
-> **Status: in build, week 1.** Nothing here is decision-grade. The most recent result
-> is a *failure* of the first method, documented below — see
-> [What we found on 11 August](#what-we-found-on-11-august-the-first-real-result).
+> **Status: in build, week 2.** Nothing here is decision-grade. Every day's findings —
+> including the days the method failed — go in the [field log](#field-log) below, newest
+> first. Current score against reality: **8 out of 12**.
 
 ---
 
@@ -55,7 +55,98 @@ out how. Keep reading.
 
 ---
 
-## What we found on 11 August — the first real result
+## Field log
+
+Newest first. Every entry is written on the day, before we know how it turns out, so the
+record shows what was claimed and when.
+
+---
+
+### 12 August 2026 — the method failed properly, and that was the useful part
+
+The satellite passed overhead at **05:52 in the morning**. We were standing in the fields
+at **06:07** — fifteen minutes later — and walked for an hour and a quarter, taking 52
+photographs. Every photograph carries a GPS tag, so we know where each one was taken to
+within a few metres. (On the previous trip the camera's GPS was off and locations had to
+be reconstructed from map links afterwards. Those were guesses. These are measurements.)
+
+The 52 photos group into **12 locations**. Every single one held **5 to 7 centimetres of
+standing water**, clearly visible. The farmers, asked directly, said water is present for
+the *entire* growing season — they never drain it.
+
+So the correct answer is **12 out of 12 flooded**, and there is no room to argue about it.
+
+#### The scoreboard
+
+| Rule | Score |
+|---|---|
+| The original rule: is the field darker than a fixed line? | **0 / 12** |
+| Ask the second radar channel (VH) the same question | **8 / 12** |
+| Ask how far VH has fallen from that field's own dry level | **8 / 12** |
+
+Not "needs tuning". **Zero.** And the clever third rule — the one that looked promising on
+11 August — turned out to be **no better than the simple one**. We tested 17 different
+settings for it. None beat 8 out of 12.
+
+#### Why the first rule failed
+
+The textbook is right that **open water** is dark. But a rice field is not open water. It
+is thousands of **stems standing up out of the water**.
+
+Picture the corner where a wall meets the floor. Throw a ball into that corner and it
+comes straight back at you. A rice stem meeting the water surface makes exactly that
+shape. So the radar pulse hits the water, bounces sideways into a stem, and is sent
+**straight back up to the satellite**. This is called **double bounce**.
+
+The result is the opposite of what the rule assumed:
+
+- a **bare, just-flooded** field, before the plants grow — genuinely dark ✅
+- a **flooded field full of growing rice** — **bright** ❌
+
+The rule was never measuring "is there water". It was measuring "is this field in the
+fortnight right after planting, before the plants come up". For the other four months of
+the season it was blind.
+
+#### The question this leaves
+
+The **same four locations fail under every rule we have tried**. They are all in the
+southern half of the walk — and looking back through a year of satellite data, they are
+the same four whose readings never showed the dip that the others did when they were
+planted.
+
+So the next question is not *"what number should the threshold be?"*. It is **"what is
+different about those four fields?"**
+
+#### Four other things settled the same day
+
+**There is no winter rice crop here.** We pulled 20 months of satellite data, back to
+December 2024, looking for a second flooding each winter. There isn't one. This matters
+more than it sounds: the international methane formula has a multiplier for whether the
+field was flooded in the months *before* the season, and it is either 1.0 or 2.41.
+Getting it wrong would have **more than doubled every number this project produces**.
+It's 1.0.
+
+**The season starts a month later than assumed** — the settings said 15 June; the
+satellite curves and the farmers both say mid-July.
+
+**The crop is longer than assumed** — the model was using 120 days. Planting was late
+June and harvest is late November or mid-December: **150 to 173 days**. Methane scales
+directly with this, so that was 25–44% being left out.
+
+**We found a faster source of satellite data.** We had been using Microsoft's copy of the
+archive. The European Space Agency publishes to its own system within hours, while
+Microsoft's copy lagged more than a day. For a project built on *same-day* checking, that
+difference is the whole point. Both are now wired up.
+
+#### And two more bugs
+
+One made the program crash the second time you ran it. The other made it fail *silently*
+— it would finish, report success, and produce nothing at all. Three of the twelve
+locations disappeared that way before anyone noticed.
+
+---
+
+### 11 August 2026 — the first real result
 
 On 11 August 2026 we walked into the paddy block near Sarpavaram and photographed three
 fields. All three clearly held **transplanted rice standing in water**.
@@ -66,7 +157,7 @@ Then we asked the satellite what it thought.
 
 **The satellite said all three were dry.** Zero out of three.
 
-### Why it failed
+#### Why it failed
 
 The "water is a mirror" rule is true — for **bare** water. But these fields had rice
 stems sticking up out of the water. The radar pulse hits the water, bounces sideways
@@ -75,7 +166,7 @@ not darker. This is called **double-bounce**, and it means a fixed brightness th
 only works during the short window between flooding a field and the seedlings growing
 tall enough to matter.
 
-### What looks more promising
+#### What looks more promising
 
 Instead of asking *"is this field darker than a fixed line?"*, ask *"**how much darker
 has this field become compared to its own dry season?**"* Every field then gets judged
@@ -99,6 +190,11 @@ control (3.3 dB) is only **1.7 dB**, on a sample of four fields with one control
 **That is suggestive, not proven.** It is written down here so that if it falls apart on
 a bigger sample, the record shows what was claimed and when.
 
+> **Follow-up, 12 August:** it partly did. On four times the sample, judging each field
+> against its own dry season scored **exactly the same** as the far simpler rule of just
+> reading the VH channel — 8 out of 12 either way. The idea was not wrong, but it added
+> nothing. Left standing here, unedited, because that is the point of writing it down.
+
 Raw numbers: [`data/validation/2026-08-11-first-ground-check.csv`](data/validation/2026-08-11-first-ground-check.csv).
 Chart code: [`src/visualization/plot_validation.py`](src/visualization/plot_validation.py).
 
@@ -112,14 +208,20 @@ Chart code: [`src/visualization/plot_validation.py`](src/visualization/plot_vali
 | Satellite pass calendar, derived not assumed | done — every 12 days, 05:52 IST, orbit 19 |
 | Download + cache layer (fetch once, never re-fetch) | done |
 | Sentinel-1 backscatter per field, per pass | done |
-| First ground-truth trip, 19 photos | done — 11 Aug 2026 |
-| First validation of satellite vs reality | done — **and the method failed** |
-| Flood classification that survives contact with reality | **in progress** |
+| Same-day satellite feed, hours after the pass | done — 12 Aug 2026 |
+| Ground-truth trips | done — 11 Aug (3 fields), 12 Aug (12 GPS-tagged locations) |
+| 20 months of history, Dec 2024 → Jul 2026 | done — 48 passes |
+| Validation of satellite vs reality | done — **and it is scored honestly: 8/12** |
+| Pre-season flooding multiplier settled (1.0, not 2.41) | done — the biggest single risk in the model |
+| Flood classification that survives contact with reality | **in progress — this is the gate** |
 | Methane model (IPCC 2019 Tier 2) | not started |
 | AWD comparison | not started |
 | Web app | not started |
 
-### Three bugs found along the way
+Nothing below the gate gets built until a satellite can reliably tell whether a field has
+water in it. Everything after that link in the chain depends on it being right.
+
+### Five bugs found along the way
 
 Each one produced believable but wrong numbers, silently. They are worth listing because
 "the code ran without an error" is not the same as "the answer is right".
@@ -139,14 +241,27 @@ Each one produced believable but wrong numbers, silently. They are worth listing
    25 June 2026 produced a one-off 7-day gap. Taking the minimum would have projected a
    7-day calendar and wasted real field trips. The correct answer is the **mode**: 12 days.
 
+4. **A crash that only happened the second time you ran it.** The first run downloaded
+   the data and worked. The second run read it back from the cache — down a code path
+   that skipped an import the first path had quietly relied on — and died.
+
+5. **Total failure, reported as success.** Worse than the above, because there was
+   nothing to notice. Each field was processed inside a "carry on if this one fails"
+   block, and the message only printed in verbose mode. So the program hit bug 4 on every
+   single field, swallowed all twelve errors, exited cleanly, and produced an empty
+   result. Three locations were missing from a chart before anyone spotted it. *"The code
+   ran without an error"* is not the same as *"the answer is right"*.
+
 ---
 
 ## What happens next
 
 | When | What |
 |---|---|
-| **Next** | Second ground check on the 12 Aug pass — a **one-day** gap between photo and satellite, the tightest validation available |
-| Then | Rebuild flood detection around baseline-drop and VH, and re-test it against the photos |
+| **Next** | Work out what is different about the four locations that fail every rule |
+| **24 Aug** | Third ground check, on the morning of the next satellite pass |
+| Then | Ask the farmers the questions 12 Aug raised: straw handling, pre-harvest drying, canal vs pump control |
+| Then | Correct the season dates and crop length in the model, now that the real ones are known |
 | Then | Draw 10–15 field boundaries and run the whole season through |
 | Then | IPCC Tier 2 methane per field, as a range not a single number |
 | Then | AWD comparison — methane avoided, water saved, pumping cost saved |
@@ -156,8 +271,11 @@ Each one produced believable but wrong numbers, silently. They are worth listing
 
 ## Honesty rules this project runs on
 
-- **Report what was measured.** An honest 71% agreement beats a flattering 95%. The rows
-  where satellite and ground disagree are the most valuable rows in the table.
+- **Report what was measured.** The score today is 8 out of 12, written down and dated.
+  It would have been easy to move the threshold until the chart looked good — and the
+  number would then have been *tuned to agree* rather than *measured to be true*. An
+  honest 67% you can improve on beats a flattering 95% you cannot trust. The rows where
+  satellite and ground disagree are the most valuable rows in the table.
 - **Flag, don't fudge.** When the radar becomes unreliable, mark the reading
   low-confidence. Never quietly shift a threshold to make a curve look right.
 - **Every number carries its uncertainty.** The methane emission factor has a published
@@ -188,6 +306,8 @@ conda activate varaha
 
 python -m src.config                      # print resolved config, create dirs
 python -m src.data.overpass               # next Sentinel-1 pass dates
+python -m src.data.sentinel1_cdse         # today's reading, straight from ESA
+python -m src.features.flooding --sweep   # score every flood threshold against reality
 python -m src.visualization.plot_validation   # regenerate the chart above
 ```
 
@@ -221,18 +341,23 @@ are in [`CLAUDE.md`](CLAUDE.md).
 | [`docs/00-project-explainer.md`](docs/00-project-explainer.md) | Long-form walkthrough |
 | [`docs/03-methane-model.md`](docs/03-methane-model.md) | Every IPCC constant with its table reference |
 | [`docs/02-field-visit-kit.md`](docs/02-field-visit-kit.md) | Consent script, questions, boundary procedure |
+| [`docs/handoff-prompt.md`](docs/handoff-prompt.md) | The whole state of the project in one pasteable block |
 
 ---
 
 ## Data sources
 
-All free, all public, no API keys.
+All free and public. Two of them need a free account; none costs anything.
 
-| Source | Used for |
-|---|---|
-| Sentinel-1 (ESA, via Microsoft Planetary Computer) | radar backscatter — the water signal |
-| Sentinel-2 (ESA) | optical NDVI — crop growth, cloud permitting |
-| IPCC 2019 Refinement, Vol. 4 Ch. 5 | methane emission factors and scaling factors |
+| Source | Used for | Access |
+|---|---|---|
+| Sentinel-1 (ESA, via Microsoft Planetary Computer) | radar backscatter — the archive of record | anonymous |
+| Sentinel-1 (ESA, via Copernicus Data Space) | the **same-day** reading, hours after the pass | free account |
+| Sentinel-2 (ESA) | optical NDVI — crop growth, cloud permitting | anonymous |
+| IPCC 2019 Refinement, Vol. 4 Ch. 5 | methane emission factors and scaling factors | published document |
+
+Both Sentinel-1 sources are wired up and used together: Copernicus answers *today*,
+Microsoft's copy is the record once it catches up. Where they overlap, the archive wins.
 
 ---
 

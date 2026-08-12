@@ -70,7 +70,19 @@ python -m src.data.overpass     # next Sentinel-1 pass dates
 No `Co-Authored-By: Claude` trailers. No "generated with" lines in commits, PR
 bodies, or file headers. This is a portfolio repo tied to a job application.
 
-### 2. The two-CRS rule
+### 2. Findings go in the README, never in a new dated file
+
+`README.md` carries a **field log**, newest entry first. Every push that produced a
+finding adds an entry there — dated, in plain language, readable by someone who has
+never touched a satellite. Do **not** create `docs/YYYY-MM-DD-*.md`; a reader who
+lands on the repo sees the README and nothing else, so that is where the work has to
+be visible.
+
+Old entries are never edited to look better. If a later day contradicts an earlier
+claim, the earlier entry stays as written and gets a **follow-up note** under it.
+That contradiction is the evidence the project is honest.
+
+### 3. The two-CRS rule
 
 - `EPSG:4326` (WGS84) — **stores** and **displays**. GeoJSON, the web map, the DB.
 - `EPSG:32644` (UTM 44N) — **measures**. Every area, distance, buffer.
@@ -78,18 +90,18 @@ bodies, or file headers. This is a portfolio repo tied to a job application.
 Area computed in degrees is wrong by ~1.2 × 10¹⁰ on a real field here. Both are in
 `src/config.py` as `CRS_WGS84` and `CRS_UTM_44N`. Never hardcode either.
 
-### 3. Farmer data is anonymous from the first commit
+### 4. Farmer data is anonymous from the first commit
 
 `F001`, `Farmer 1`. No names, no survey numbers, no phone numbers, ever, in any
 tracked file. Coordinates get jittered before anything is published. Real
 boundaries, interviews and photos live under `data/fields/` and `references/`,
 both gitignored.
 
-### 4. No magic numbers outside `src/config.py`
+### 5. No magic numbers outside `src/config.py`
 
 If a threshold, constant or date appears in a module, it belongs in config.
 
-### 5. Flag, don't fudge
+### 6. Flag, don't fudge
 
 When the radar becomes unreliable — canopy closure being the main case — mark the
 observation **low-confidence**. Do not silently reclassify it or shift the
@@ -117,7 +129,7 @@ scenes. Use `sentinel-1-grd` for *dates*; RTC stays correct for *backscatter*.
 
 **Canopy closure, and how little headroom the threshold really has.** Around 60
 days after transplant the leaves hide the water, VV rises, and a fixed threshold
-reads "dry". See rule 5.
+reads "dry". See rule 6.
 
 The margin is much tighter than a generic land-cover table suggests. "Dense
 canopy ≈ −7 dB" is a *forest/shrub* figure and does not describe rice: a paddy
@@ -130,7 +142,7 @@ Consequence: canopy closure may not just add noise, it may push mid-season
 observations across the threshold wholesale. Do not assume the budgeted risk;
 **measure it** — read the Phase 4 curves, find where each field's series peaks,
 and if the peak sits within ~2 dB of the threshold, that field's mid-season
-observations are low-confidence by construction (rule 5), regardless of what the
+observations are low-confidence by construction (rule 6), regardless of what the
 threshold says. Trust your own curves over both numbers above.
 
 **12-day revisit undercounts drying events.** A drying event shorter than the gap
