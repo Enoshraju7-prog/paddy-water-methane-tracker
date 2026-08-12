@@ -181,8 +181,15 @@ def load_scenes(
 
 def series_for_field(ds, geometry, field_id: str) -> FieldSeries:
     """Mask the cube to one polygon and take the mean per pass."""
+    import odc.geo.xr  # noqa: F401  — registers the `.odc` xarray accessor
     from rasterio.features import geometry_mask
 
+    # Why the import above is here and not only in `load_scenes`: the accessor is
+    # registered as an import side effect. On a CACHE HIT `load_scenes` returns a
+    # pickled Dataset without importing odc at all, so `.odc` does not exist and
+    # every field dies with "'Dataset' object has no attribute 'odc'". Because
+    # `series_for_fields` swallows per-field exceptions, that failure is SILENT
+    # under verbose=False — the run exits 0 having produced nothing.
     transform = ds.odc.geobox.transform
     shape = (ds.sizes["y"], ds.sizes["x"])
     inside = ~geometry_mask(
